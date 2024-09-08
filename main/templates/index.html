@@ -1,0 +1,134 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Notes</title>
+    <script>
+        function confirmDelete(event) {
+            event.preventDefault(); // Prevent the default action
+            const delete_pop = document.getElementById("delete-pop");
+            if (confirm('Are you sure you want to delete this note?')) {
+                delete_pop.classList.remove("hidden");
+                delete_pop.classList.add("bottom-2");
+                delete_pop.classList.add("right-2");
+
+                // Submit the form after showing the popup
+                event.target.closest('form').submit();
+                setTimeout(() => {
+                    console.log("Deleted");
+
+                    // Hide the popup after 5 seconds
+                    delete_pop.classList.add("hidden");
+                    delete_pop.classList.remove("bottom-2");
+                    delete_pop.classList.remove("right-2");
+                }, 5000);
+            }
+        }
+    </script>
+
+</head>
+
+<body>
+    <div class="flex justify-between px-6 py-8 align-middle items-center">
+        <h1 class="font-bold md:text-2xl">Your Notes Wall</h1>
+        {% if user.is_authenticated %}
+        <div class="flex align-middle items-center md:justify-between flex-row">
+            <a class="" href="/new">
+                <button
+                    class="text-white md:text-lg border-2 bg-blue-500 border-blue-500 rounded-lg px-4 py-2 hover:bg-blue-700 hover:border-blue-700 duration-300">Add
+                    Note</button>
+
+            </a>
+            <p class="md:mx-8">{{ user.username }}</p>
+            <a href="/logout"><button
+                    class="border-2 border-red-500 text-lg bg-transparent px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white duration-300">Logout</button></a>
+        </div>
+
+
+        {% else %}
+        <a href="/login"><button
+                class="text-white text-lg border-2 bg-blue-500 border-blue-500 rounded-lg md:px-4 py-2 hover:bg-blue-700 hover:border-blue-700 duration-300">Login</button></a>
+        {% endif %}
+    </div>
+    <section>
+        {% if notes %}
+        <div id="noteList" class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
+            {% for notes in notes %}
+            <div
+                class="w-full h-64 flex flex-col justify-between bg-white rounded-lg border border-gray-400 mb-6 py-5 px-4">
+
+                <div>
+                    <h4 name="title" class="text-gray-800 font-bold mb-3">{{ notes.title }}</h4>
+                    <p name="content" class="text-gray-800 text-sm">{{ notes.content }}</p>
+                    <img src="{{ notes.image.url }}" alt="" width="96" height="96" class="my-2">
+                </div>
+                <div>
+                    <div class="flex items-center justify-between text-gray-800">
+                        <p class="text-sm">{{ notes.created_at }}</p>
+                        <div class=" flex">
+                            <form action="{% url 'update_note' notes.pk %}" method="POST">
+                                {% csrf_token %}
+                                <button
+                                    class="w-8 h-8 rounded-full bg-gray-800 dark:bg-gray-100 dark:text-gray-800 text-white flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2  focus:ring-black mr-2"
+                                    aria-label="edit note" role="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil"
+                                        width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5"
+                                        stroke="currentColor" fill="none" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z"></path>
+                                        <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4"></path>
+                                        <line x1="13.5" y1="6.5" x2="17.5" y2="10.5"></line>
+                                    </svg>
+                                </button>
+                            </form>
+                            <form action="{% url 'delete_note' notes.pk %}" method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="button" onclick="confirmDelete(event)"
+                                    class="w-8 h-8 rounded-full bg-gray-800 dark:bg-gray-100 dark:text-gray-800 text-white flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2  focus:ring-black"
+                                    aria-label="delete note" role="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20"
+                                        viewBox="0,0,256,256" style="fill:#000000;">
+                                        <g fill="#ff0000" fill-rule="nonzero" stroke="none" stroke-width="1"
+                                            stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"
+                                            stroke-dasharray="" stroke-dashoffset="0" font-family="none"
+                                            font-weight="none" font-size="none" text-anchor="none"
+                                            style="mix-blend-mode: normal">
+                                            <g transform="scale(10.66667,10.66667)">
+                                                <path
+                                                    d="M10,2l-1,1h-6v2h1.10938l1.7832,15.25586v0.00781c0.13102,0.98666 0.98774,1.73633 1.98242,1.73633h8.24805c0.99468,0 1.8514,-0.74968 1.98242,-1.73633l0.00195,-0.00781l1.7832,-15.25586h1.10938v-2h-6l-1,-1zM6.125,5h11.75l-1.75195,15h-8.24805z">
+                                                </path>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No notes available. Create a new note!</p>
+        {% endif %}
+    </section>
+    <section id="delete-pop" class="hidden absolute translate-y-0">
+        <div class="p-4 bg-red-500 rounded-lg">
+            <p class="text-white">Your Note has been Deleted</p>
+        </div>
+    </section>
+
+    <script>
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
+</body>
+
+</html>

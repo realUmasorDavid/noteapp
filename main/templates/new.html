@@ -1,0 +1,24 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Notes</title>
+</head>
+<body>
+    <form method="post" enctype="multipart/form-data" class="flex flex-col items-center text-left mt-6">
+        {% csrf_token %}
+        <h1 class="text-2xl">My Notes</h1>
+        <input type="text" name="title" id="" class="border-2 w-1/2 mt-5 p-2 rounded-lg"
+            placeholder="Enter Note Title:">
+        <input type="file" name="image" id="image" class="border-2 w-1/2 mt-5 p-2 rounded-lg" placeholder="Note Image">
+        <Textarea name="content" placeholder="Enter Note:" class="border-2 w-1/2 my-5 p-2 h-60 rounded-lg resize-none"></Textarea>
+        <button type="submit" class="bg-blue-500 px-4 py-2 rounded-lg text-white">Add Note</button>
+
+    </form>
+</body>
+</html>
