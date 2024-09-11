@@ -80,12 +80,12 @@
         <div id="noteList" class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 py-2 md:py-6 px-6">
             {% for notes in notes %}
             <div
-                class="w-full h-64 flex flex-col justify-between bg-white rounded-lg border border-gray-400 mb-6 py-5 px-4">
+                class="w-full h-full flex flex-col justify-between bg-white rounded-lg border border-gray-400 mb-6 py-5 px-4">
 
                 <div>
                     <h4 name="title" class="text-gray-800 font-bold mb-3">{{ notes.title }}</h4>
                     <p name="content" class="text-gray-800 text-sm">{{ notes.content }}</p>
-                    <img src="{{ notes.image.url }}" alt="" width="96" height="96" class="my-2 max-h-32">
+                    <img src="{{ notes.image.url }}" alt="" width="96" height="96" class="my-2">
                 </div>
                 <div>
                     <div class="flex items-center justify-between text-gray-800">
