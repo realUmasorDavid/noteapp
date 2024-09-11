@@ -69,6 +69,7 @@ def signup(request):
         if password1 == password2:
             user = User.objects.create_user(username, email, password1)
             user.save()
+            auth.login(request, user)
             return redirect('note_list')
         return render(request, 'login.html', {'success': 'Account created successfully'})
     return render(request, 'register.html')
